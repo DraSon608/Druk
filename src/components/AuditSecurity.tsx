@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import { INITIAL_USERS } from '../data/initialData';
 import { UserRole } from '../types';
 
 export const AuditSecurity: React.FC = () => {
+  const { t } = useLanguage();
   const { currentUser, auditLogs, sessionToken, switchRole, setIsLoginModalOpen } = useAuth();
   const [filterAction, setFilterAction] = useState('ALL');
 
@@ -64,19 +66,19 @@ export const AuditSecurity: React.FC = () => {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-slate-900 border border-slate-800 p-5 rounded-xl">
         <div>
           <h1 className="text-lg font-bold text-white tracking-tight">
-            Security, Access Control & Audit Ledger
+            {t('securityTitle')}
           </h1>
           <p className="text-xs text-slate-400 mt-0.5">
-            Role-based authorization, active cryptographic sessions, and tamper-evident transaction logs
+            {t('securitySubtitle')}
           </p>
         </div>
 
         <button
           type="button"
           onClick={() => setIsLoginModalOpen(true)}
-          className="px-3.5 py-1.5 text-xs font-semibold text-slate-900 bg-white hover:bg-slate-200 rounded-lg transition-colors flex items-center gap-1.5"
+          className="px-3.5 py-1.5 text-xs font-semibold text-slate-900 bg-white hover:bg-slate-200 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer"
         >
-          <span>🔐 Switch Credential</span>
+          <span>{t('switchCredentialBtn')}</span>
         </button>
       </div>
 
@@ -84,7 +86,7 @@ export const AuditSecurity: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-slate-900 border border-slate-800 rounded-xl p-4">
           <span className="text-[11px] font-medium uppercase tracking-wider text-slate-400 block">
-            Active Security Token
+            {t('activeSecurityToken')}
           </span>
           <div className="flex items-center gap-2 mt-1">
             <span className="text-xs font-mono font-bold text-emerald-400 bg-slate-950 px-2.5 py-1 rounded border border-slate-800 truncate">
@@ -98,7 +100,7 @@ export const AuditSecurity: React.FC = () => {
 
         <div className="bg-slate-900 border border-slate-800 rounded-xl p-4">
           <span className="text-[11px] font-medium uppercase tracking-wider text-slate-400 block">
-            Authenticated User Role
+            {t('authenticatedRole')}
           </span>
           <div className="flex items-baseline gap-2 mt-1">
             <span className="text-base font-bold text-white">
@@ -115,7 +117,7 @@ export const AuditSecurity: React.FC = () => {
 
         <div className="bg-slate-900 border border-slate-800 rounded-xl p-4">
           <span className="text-[11px] font-medium uppercase tracking-wider text-slate-400 block">
-            Data Encryption Level
+            {t('encryptionLevel')}
           </span>
           <div className="flex items-baseline gap-2 mt-1">
             <span className="text-base font-bold text-white">
@@ -132,7 +134,7 @@ export const AuditSecurity: React.FC = () => {
       <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
         <div className="pb-3 border-b border-slate-800 mb-4">
           <h2 className="text-xs font-bold uppercase tracking-wider text-slate-300">
-            Role-Based Access Control (RBAC) Matrix
+            {t('rbacTitle')}
           </h2>
           <span className="text-[11px] text-slate-400">
             Multi-tier granular permissions enforced across Druk POS, marketing workflows, and database exports
@@ -195,7 +197,7 @@ export const AuditSecurity: React.FC = () => {
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-slate-800 mb-4">
           <div>
             <h2 className="text-xs font-bold uppercase tracking-wider text-slate-300">
-              Security Audit Event Ledger
+              {t('auditLedgerTitle')}
             </h2>
             <span className="text-[11px] text-slate-400">
               Append-only tamper-resistant trail of logins, campaign updates, and checkout transactions

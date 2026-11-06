@@ -175,3 +175,79 @@ test('generateExecutiveReport generates complete report with insights', () => {
   assert.equal(report.executiveHighlights.length, 3);
   assert.equal(report.strategicRecommendations.length, 3);
 });
+
+test('generateReportCSVContent formats all required sections for external analysis', async () => {
+  const { generateReportCSVContent } = await import('./reportExport');
+  const mockProducts: Product[] = [
+    {
+      id: 'p1',
+      name: 'Druk Alpine Tea',
+      sku: 'DRK-TEA-01',
+      barcode: '8901030829141',
+      barcodeType: 'EAN-13',
+      category: 'Artisanal Beverage',
+      price: 28,
+      costPrice: 8,
+      stock: 120,
+      description: 'Hand-picked organic tea',
+      tags: ['Beverage'],
+      marketingStory: 'Mountain grown',
+      benefits: ['Calming'],
+      engagementMetrics: {
+        totalScans: 50,
+        uniqueShoppers: 40,
+        conversions: 30,
+        dwellTimeAvgSec: 15,
+        revenueGenerated: 840,
+      },
+    },
+  ];
+
+  const mockCampaigns: Campaign[] = [
+    {
+      id: 'c1',
+      name: 'White Dragon Welcome',
+      code: 'DRUK15',
+      tagline: 'Experience the thunder',
+      discountType: 'percentage',
+      discountValue: 15,
+      targetProductIds: ['p1'],
+      triggerCondition: 'instant_scan',
+      description: '15% discount',
+      startDate: '2026-11-01',
+      endDate: '2026-11-30',
+      status: 'active',
+      metrics: {
+        impressions: 120,
+        scansTriggered: 50,
+        redemptions: 30,
+        attributedSales: 840,
+        budgetAllocated: 150,
+        roiPercentage: 460,
+      },
+    },
+  ];
+
+  const report = generateExecutiveReport(mockProducts, mockCampaigns, []);
+  const storeMetrics = [
+    {
+      store: 'Downtown Flagship',
+      scans: 50,
+      conversions: 30,
+      revenue: 840,
+      conversionRate: 60,
+      topProduct: 'Druk Alpine Tea',
+    },
+  ];
+
+  const csv = generateReportCSVContent(report, mockProducts, mockCampaigns, storeMetrics);
+  assert.ok(csv.includes('=== DRUK MARKETING INTELLIGENCE - EXECUTIVE PERFORMANCE REPORT ==='));
+  assert.ok(csv.includes('=== AUTOMATED EXECUTIVE HIGHLIGHTS ==='));
+  assert.ok(csv.includes('=== STRATEGIC MARKETING RECOMMENDATIONS ==='));
+  assert.ok(csv.includes('=== PRODUCT ENGAGEMENT BREAKDOWN ==='));
+  assert.ok(csv.includes('=== STORE BRANCH PERFORMANCE ==='));
+  assert.ok(csv.includes('=== CAMPAIGN ROI ATTRIBUTION ==='));
+  assert.ok(csv.includes('Druk Alpine Tea'));
+  assert.ok(csv.includes('DRUK15'));
+});
+

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useData } from '../context/DataContext';
+import { useLanguage } from '../context/LanguageContext';
 import {
   calculateConversionRate,
   calculateAverageDwellTime,
@@ -8,6 +9,7 @@ import {
 } from '../utils/analytics';
 
 export const AdminDashboard: React.FC = () => {
+  const { t, isDzongkha } = useLanguage();
   const {
     scanEvents,
     products,
@@ -64,10 +66,10 @@ export const AdminDashboard: React.FC = () => {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-slate-900 border border-slate-800 p-5 rounded-xl">
         <div>
           <h1 className="text-lg font-bold text-white tracking-tight">
-            Marketing Executive Dashboard
+            {t('dashboardTitle')}
           </h1>
           <p className="text-xs text-slate-400 mt-0.5">
-            Real-time barcode engagement telemetry, customer velocity, and POS attribution
+            {t('dashboardSubtitle')}
           </p>
         </div>
 
@@ -75,17 +77,17 @@ export const AdminDashboard: React.FC = () => {
           <button
             type="button"
             onClick={simulateLiveScan}
-            className="px-3 py-1.5 text-xs font-semibold text-slate-900 bg-white hover:bg-slate-200 rounded-lg transition-colors flex items-center gap-1.5"
+            className="px-3 py-1.5 text-xs font-semibold text-slate-900 bg-white hover:bg-slate-200 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer"
           >
             <span>⚡</span>
-            <span>Simulate Scan</span>
+            <span>{t('simulateScan')}</span>
           </button>
           <button
             type="button"
             onClick={simulateRushSurge}
-            className="px-3 py-1.5 text-xs font-semibold text-slate-200 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg transition-colors"
+            className="px-3 py-1.5 text-xs font-semibold text-slate-200 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg transition-colors cursor-pointer"
           >
-            Simulate Rush Hour (5x)
+            {t('simulateRush')}
           </button>
         </div>
       </div>
@@ -94,7 +96,7 @@ export const AdminDashboard: React.FC = () => {
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3 sm:gap-4">
         <div className="bg-slate-900 border border-slate-800 rounded-xl p-4">
           <span className="text-[11px] font-medium uppercase tracking-wider text-slate-400 block">
-            Total Scans Logged
+            {t('totalScans')}
           </span>
           <div className="flex items-baseline gap-2 mt-1">
             <span className="text-2xl font-bold font-mono text-white tabular-nums">
@@ -102,39 +104,39 @@ export const AdminDashboard: React.FC = () => {
             </span>
             <span className="text-[11px] text-emerald-400 font-medium">+14.2%</span>
           </div>
-          <span className="text-[11px] text-slate-400 mt-1 block">Across all retail branches</span>
+          <span className="text-[11px] text-slate-400 mt-1 block">{t('acrossBranches')}</span>
         </div>
 
         <div className="bg-slate-900 border border-slate-800 rounded-xl p-4">
           <span className="text-[11px] font-medium uppercase tracking-wider text-slate-400 block">
-            Scan-to-Sale Conversion
+            {t('conversionRate')}
           </span>
           <div className="flex items-baseline gap-2 mt-1">
             <span className="text-2xl font-bold font-mono text-emerald-400 tabular-nums">
               {conversionRate}%
             </span>
             <span className="text-[11px] text-slate-400 font-mono">
-              ({conversions.length} sales)
+              ({conversions.length})
             </span>
           </div>
-          <span className="text-[11px] text-slate-400 mt-1 block">POS basket checkout rate</span>
+          <span className="text-[11px] text-slate-400 mt-1 block">{t('checkoutRate')}</span>
         </div>
 
         <div className="bg-slate-900 border border-slate-800 rounded-xl p-4">
           <span className="text-[11px] font-medium uppercase tracking-wider text-slate-400 block">
-            Attributed POS Revenue
+            {t('attributedRevenue')}
           </span>
           <div className="flex items-baseline gap-2 mt-1">
             <span className="text-2xl font-bold font-mono text-white tabular-nums">
               ${totalAttributedRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </span>
           </div>
-          <span className="text-[11px] text-slate-400 mt-1 block">Generated via scan triggers</span>
+          <span className="text-[11px] text-slate-400 mt-1 block">{t('scanAttributedDesc')}</span>
         </div>
 
         <div className="bg-slate-900 border border-slate-800 rounded-xl p-4">
           <span className="text-[11px] font-medium uppercase tracking-wider text-slate-400 block">
-            Active Campaigns
+            {t('activeCampaigns')}
           </span>
           <div className="flex items-baseline gap-2 mt-1">
             <span className="text-2xl font-bold font-mono text-white tabular-nums">
@@ -144,19 +146,19 @@ export const AdminDashboard: React.FC = () => {
               / {campaigns.length}
             </span>
           </div>
-          <span className="text-[11px] text-slate-400 mt-1 block">Triggering promo perks</span>
+          <span className="text-[11px] text-slate-400 mt-1 block">{t('triggeringPerks')}</span>
         </div>
 
         <div className="col-span-2 md:col-span-1 bg-slate-900 border border-slate-800 rounded-xl p-4">
           <span className="text-[11px] font-medium uppercase tracking-wider text-slate-400 block">
-            Avg Dwell Time
+            {t('avgDwellTime')}
           </span>
           <div className="flex items-baseline gap-2 mt-1">
             <span className="text-2xl font-bold font-mono text-cyan-300 tabular-nums">
               {avgDwellTime}s
             </span>
           </div>
-          <span className="text-[11px] text-slate-400 mt-1 block">Shopper product inspection</span>
+          <span className="text-[11px] text-slate-400 mt-1 block">{t('dwellDesc')}</span>
         </div>
       </div>
 
@@ -167,18 +169,18 @@ export const AdminDashboard: React.FC = () => {
           <div className="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
             <div>
               <h2 className="text-xs font-bold uppercase tracking-wider text-slate-300">
-                Hourly Barcode Scan Velocity & Conversions
+                {t('hourlyVelocity')}
               </h2>
               <span className="text-[11px] text-slate-400">
-                Peak shopping hour analysis across POS terminals
+                {t('hourlyDesc')}
               </span>
             </div>
             <div className="flex items-center gap-4 text-xs font-medium">
               <span className="flex items-center gap-1.5 text-slate-300">
-                <span className="w-2.5 h-2.5 rounded bg-slate-400" /> Total Scans
+                <span className="w-2.5 h-2.5 rounded bg-slate-400" /> {t('totalScansLegend')}
               </span>
               <span className="flex items-center gap-1.5 text-emerald-400">
-                <span className="w-2.5 h-2.5 rounded bg-emerald-500" /> Completed Purchases
+                <span className="w-2.5 h-2.5 rounded bg-emerald-500" /> {t('purchasesLegend')}
               </span>
             </div>
           </div>
@@ -222,10 +224,10 @@ export const AdminDashboard: React.FC = () => {
         <div className="lg:col-span-4 bg-slate-900 border border-slate-800 rounded-xl p-5">
           <div className="flex items-center justify-between pb-3 border-b border-slate-800 mb-3">
             <h2 className="text-xs font-bold uppercase tracking-wider text-slate-300">
-              Branch Performance
+              {t('branchPerformance')}
             </h2>
             <span className="text-[11px] text-slate-400 font-mono">
-              {storePerformance.length} Locations
+              {storePerformance.length} {t('locationsCount')}
             </span>
           </div>
 
@@ -264,14 +266,14 @@ export const AdminDashboard: React.FC = () => {
           <div>
             <div className="flex items-center gap-2">
               <h2 className="text-xs font-bold uppercase tracking-wider text-slate-300">
-                Real-Time Barcode Engagement Feed
+                {t('liveFeedTitle')}
               </h2>
               <span className="px-2 py-0.5 text-[10px] font-mono rounded bg-slate-800 text-slate-300 border border-slate-700">
-                Live POS Stream
+                {t('liveFeedBadge')}
               </span>
             </div>
             <span className="text-[11px] text-slate-400">
-              Showing {filteredEvents.length} transactions across retail terminals
+              Showing {filteredEvents.length} {t('liveFeedSubtitle')}
             </span>
           </div>
 
@@ -281,7 +283,7 @@ export const AdminDashboard: React.FC = () => {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search barcode, product, or store..."
+              placeholder={t('searchPlaceholder')}
               className="px-2.5 py-1 text-xs bg-slate-950 border border-slate-800 rounded-lg text-white font-mono focus:outline-none focus:border-slate-500 w-full sm:w-56"
             />
 
@@ -290,7 +292,7 @@ export const AdminDashboard: React.FC = () => {
               onChange={(e) => setSelectedStoreFilter(e.target.value)}
               className="px-2.5 py-1 text-xs bg-slate-950 border border-slate-800 rounded-lg text-white focus:outline-none focus:border-slate-500"
             >
-              <option value="ALL">All Stores</option>
+              <option value="ALL">{t('allStores')}</option>
               {stores.map((s) => (
                 <option key={s} value={s}>
                   {s}
@@ -310,7 +312,7 @@ export const AdminDashboard: React.FC = () => {
                       : 'text-slate-400 hover:text-slate-200'
                   }`}
                 >
-                  {mode === 'ALL' ? 'All' : mode === 'CONVERTED' ? 'Purchased' : 'Scanned Only'}
+                  {mode === 'ALL' ? t('filterAll') : mode === 'CONVERTED' ? t('filterPurchased') : t('filterScannedOnly')}
                 </button>
               ))}
             </div>
@@ -322,14 +324,14 @@ export const AdminDashboard: React.FC = () => {
           <table className="w-full text-left text-xs">
             <thead>
               <tr className="border-b border-slate-800 text-slate-400 uppercase tracking-wider text-[11px]">
-                <th className="py-2.5 px-3">Time</th>
-                <th className="py-2.5 px-3">Barcode</th>
-                <th className="py-2.5 px-3">Product Item</th>
-                <th className="py-2.5 px-3">Store Branch</th>
-                <th className="py-2.5 px-3">Customer Tier</th>
-                <th className="py-2.5 px-3">Campaign Promo</th>
-                <th className="py-2.5 px-3 text-right">Dwell Time</th>
-                <th className="py-2.5 px-3 text-right">Status / Sale</th>
+                <th className="py-2.5 px-3">{t('colTime')}</th>
+                <th className="py-2.5 px-3">{t('colBarcode')}</th>
+                <th className="py-2.5 px-3">{t('colProduct')}</th>
+                <th className="py-2.5 px-3">{t('colBranch')}</th>
+                <th className="py-2.5 px-3">{t('colTier')}</th>
+                <th className="py-2.5 px-3">{t('colCampaign')}</th>
+                <th className="py-2.5 px-3 text-right">{t('colDwell')}</th>
+                <th className="py-2.5 px-3 text-right">{t('colStatus')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800/60 font-mono text-slate-200">

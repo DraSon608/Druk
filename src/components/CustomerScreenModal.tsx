@@ -1,7 +1,9 @@
 import React from 'react';
 import { useData } from '../context/DataContext';
+import { useLanguage } from '../context/LanguageContext';
 
 export const CustomerScreenModal: React.FC = () => {
+  const { t } = useLanguage();
   const {
     isCustomerScreenOpen,
     setIsCustomerScreenOpen,
@@ -45,31 +47,31 @@ export const CustomerScreenModal: React.FC = () => {
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-xl font-black tracking-wider text-white uppercase">
-                  DRUK
+                  {t('brandName')}
                 </span>
                 <span className="px-2 py-0.5 text-[10px] uppercase font-bold tracking-widest rounded bg-slate-800 text-slate-300 border border-slate-700">
-                  {activeCustomerTier} Member
+                  {activeCustomerTier} {t('memberTier')}
                 </span>
               </div>
               <span className="text-xs text-slate-400">
-                Sovereign POS Marketing & Engagement Touchpoint
+                {t('customerScreenTitle')}
               </span>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
             <div className="text-right hidden sm:block">
-              <span className="text-xs text-slate-400 block">Accumulated Loyalty Points</span>
+              <span className="text-xs text-slate-400 block">{t('accumulatedPoints')}</span>
               <span className="text-sm font-bold font-mono text-emerald-400">
-                1,420 PTS (Tier Active)
+                1,420 PTS
               </span>
             </div>
             <button
               type="button"
               onClick={() => setIsCustomerScreenOpen(false)}
-              className="px-3 py-1.5 text-xs text-slate-400 hover:text-white bg-slate-900/80 hover:bg-slate-800 rounded-lg border border-slate-800 transition-colors"
+              className="px-3 py-1.5 text-xs text-slate-400 hover:text-white bg-slate-900/80 hover:bg-slate-800 rounded-lg border border-slate-800 transition-colors cursor-pointer"
             >
-              Close Display ✕
+              {t('closeDisplay')}
             </button>
           </div>
         </div>
@@ -88,17 +90,17 @@ export const CustomerScreenModal: React.FC = () => {
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-60" />
               <div className="absolute bottom-3 inset-x-3 text-center">
                 <span className="text-[11px] font-mono tracking-widest uppercase text-slate-300 font-semibold block">
-                  THE THUNDER DRAGON
+                  {t('theThunderDragon')}
                 </span>
               </div>
             </div>
 
             <div className="mt-4 max-w-xs">
               <h4 className="text-sm font-semibold text-slate-200">
-                Real-Time Barcode Engagement
+                {t('realtimeBarcodeEng')}
               </h4>
               <p className="text-xs text-slate-400 mt-1 leading-relaxed">
-                Scan authentic barcodes at our terminals to unlock tailored heritage stories, pairing secrets, and instant promotional privileges.
+                {t('realtimeBarcodeEngSub')}
               </p>
             </div>
           </div>
@@ -109,7 +111,7 @@ export const CustomerScreenModal: React.FC = () => {
               <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-6 backdrop-blur-md">
                 <div className="flex items-center justify-between pb-3 border-b border-slate-800">
                   <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-                    Currently Engaging With
+                    {t('currentlyEngagingWith')}
                   </span>
                   <span className="text-xs font-mono text-slate-400">
                     Barcode: {lastScannedProduct.barcode}
@@ -132,7 +134,7 @@ export const CustomerScreenModal: React.FC = () => {
 
                   <div className="mt-4 p-3 bg-slate-950 rounded-lg border border-slate-800/80">
                     <span className="text-[11px] uppercase tracking-wider font-bold text-slate-400 block mb-1">
-                      Artisan Origin & Craftsmanship
+                      {t('artisanOriginStory')}
                     </span>
                     <p className="text-xs text-slate-400 leading-relaxed italic">
                       "{lastScannedProduct.marketingStory}"
@@ -158,7 +160,7 @@ export const CustomerScreenModal: React.FC = () => {
                         <span className="text-xl">⚡</span>
                         <div>
                           <span className="text-sm font-bold text-amber-200 block">
-                            Privilege Unlocked: {lastTriggeredCampaign.name}
+                            {t('privilegeUnlocked')}: {lastTriggeredCampaign.name}
                           </span>
                           <span className="text-xs text-amber-300/80">
                             {lastTriggeredCampaign.tagline}
@@ -189,21 +191,21 @@ export const CustomerScreenModal: React.FC = () => {
         <div className="relative z-10 p-4 sm:px-6 bg-slate-900/95 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-4 text-xs text-slate-300">
             <span>
-              Items in Basket:{' '}
+              {t('itemsInBasket')}{' '}
               <strong className="text-white font-mono">
                 {posCart.reduce((sum, item) => sum + item.quantity, 0)}
               </strong>
             </span>
             {cartSavings > 0 && (
               <span className="text-emerald-400 font-medium">
-                Druk Marketing Savings: -${cartSavings.toFixed(2)}
+                {t('barcodeSavings')}: -${cartSavings.toFixed(2)}
               </span>
             )}
           </div>
 
           <div className="flex items-center gap-3">
             <span className="text-xs text-slate-400 uppercase tracking-wider">
-              Total Payable
+              {t('totalPayable')}
             </span>
             <span className="text-2xl font-bold font-mono text-white tabular-nums">
               ${cartTotal.toFixed(2)}

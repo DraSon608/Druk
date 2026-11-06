@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { AuthProvider } from './context/AuthContext';
 import { DataProvider } from './context/DataContext';
+import { LanguageProvider } from './context/LanguageContext';
 import { Navbar, NavTab } from './components/Navbar';
 import { AdminDashboard } from './components/AdminDashboard';
 import { PosTerminal } from './components/PosTerminal';
@@ -30,7 +31,7 @@ const AppContent: React.FC = () => {
       <footer className="border-t border-slate-900 bg-slate-950 py-5 text-slate-400 text-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <span className="text-white font-bold tracking-wider">DRUK</span>
+            <span className="text-white font-bold tracking-wider">DRUK · འབྲུག</span>
             <span>·</span>
             <span>POS Barcode Marketing Intelligence & Customer Analytics</span>
           </div>
@@ -53,10 +54,12 @@ const AppContent: React.FC = () => {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <DataProvider>
-        <AppContent />
-      </DataProvider>
-    </AuthProvider>
+    <LanguageProvider>
+      <AuthProvider>
+        <DataProvider>
+          <AppContent />
+        </DataProvider>
+      </AuthProvider>
+    </LanguageProvider>
   );
 }

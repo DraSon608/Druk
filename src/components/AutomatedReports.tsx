@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { useData } from '../context/DataContext';
-import { generateExecutiveReport } from '../utils/analytics';
+import { useLanguage } from '../context/LanguageContext';
+import { generateExecutiveReport, computeStorePerformance } from '../utils/analytics';
+import { exportReportToPDF, exportReportToCSV, exportRawScansToCSV } from '../utils/reportExport';
 import { ExecutiveReport } from '../types';
 
 export const AutomatedReports: React.FC = () => {
+  const { t } = useLanguage();
   const { products, campaigns, scanEvents, reportConfig, updateReportConfig } = useData();
 
   const [selectedPeriod, setSelectedPeriod] = useState<'Today' | '7-Day Cycle' | 'Month-to-Date'>('7-Day Cycle');
@@ -12,6 +15,9 @@ export const AutomatedReports: React.FC = () => {
   );
   const [isEmailPreviewOpen, setIsEmailPreviewOpen] = useState(false);
   const [newRecipient, setNewRecipient] = useState('');
+  const [exportFeedback, setExportFeedback] = useState<string | null>(null);
+
+  const storeMetrics = computeStorePerformance(scanEvents);
 
   const handlePeriodChange = (period: 'Today' | '7-Day Cycle' | 'Month-to-Date') => {
     setSelectedPeriod(period);
@@ -22,44 +28,41 @@ export const AutomatedReports: React.FC = () => {
   const handleRefreshReport = () => {
     const updated = generateExecutiveReport(products, campaigns, scanEvents, selectedPeriod);
     setCurrentReport(updated);
+    showFeedbackToast('✓ Performance report refreshed with latest POS telemetry');
   };
 
-  const handleExportCSV = () => {
-    const headers = [
-      'Timestamp',
-      'Barcode',
-      'Product',
-      'Category',
-      'Store',
-      'Shopper Tier',
-      'Converted',
-      'Sale Amount',
-      'Dwell Time Sec',
-      'Campaign',
-    ];
+  const showFeedbackToast = (msg: string) => {
+    setExportFeedback(msg);
+    setTimeout(() => {
+      setExportFeedback(null);
+    }, 4500);
+  };
 
-    const rows = scanEvents.map((s) => [
-      `"${s.timestamp}"`,
-      `"${s.barcode}"`,
-      `"${s.productName}"`,
-      `"${s.category}"`,
-      `"${s.storeLocation}"`,
-      `"${s.shopperTier}"`,
-      s.convertedToSale ? 'YES' : 'NO',
-      s.saleAmount || 0,
-      s.dwellTimeSec,
-      `"${s.campaignApplied || 'None'}"`,
-    ]);
+  const handleExportPDF = () => {
+    try {
+      exportReportToPDF(currentReport, products, campaigns, storeMetrics);
+      showFeedbackToast(`✓ Successfully exported "${currentReport.reportId}" as PDF`);
+    } catch {
+      showFeedbackToast('Error exporting PDF. Please use the Print/Save PDF option.');
+    }
+  };
 
-    const csvContent = [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.setAttribute('href', url);
-    link.setAttribute('download', `druk_engagement_scans_${Date.now()}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const handleExportCSVReport = () => {
+    try {
+      exportReportToCSV(currentReport, products, campaigns, storeMetrics);
+      showFeedbackToast(`✓ Performance report exported as CSV for external analysis`);
+    } catch {
+      showFeedbackToast('Error generating CSV file.');
+    }
+  };
+
+  const handleExportRawScans = () => {
+    try {
+      exportRawScansToCSV(scanEvents);
+      showFeedbackToast(`✓ Raw scan telemetry (${scanEvents.length} records) exported as CSV`);
+    } catch {
+      showFeedbackToast('Error exporting raw scans.');
+    }
   };
 
   const handleAddRecipient = (e: React.FormEvent) => {
@@ -83,30 +86,68 @@ export const AutomatedReports: React.FC = () => {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-slate-900 border border-slate-800 p-5 rounded-xl">
         <div>
           <h1 className="text-lg font-bold text-white tracking-tight">
-            Automated Performance Reporting
+            {t('reportsTitle')}
           </h1>
           <p className="text-xs text-slate-400 mt-0.5">
-            Real-time synthesis of POS barcode conversion metrics, campaign ROI, and automated stakeholder briefing
+            {t('reportsSubtitle')}
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
             onClick={handleRefreshReport}
-            className="px-3 py-1.5 text-xs text-slate-300 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg transition-colors flex items-center gap-1.5"
+            className="px-3 py-1.5 text-xs text-slate-300 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer"
           >
-            <span>🔄 Regenerate</span>
+            <span>{t('regenerateBtn')}</span>
           </button>
+
+          <button
+            type="button"
+            onClick={handleExportPDF}
+            className="px-3 py-1.5 text-xs font-semibold text-slate-900 bg-white hover:bg-slate-200 rounded-lg transition-colors flex items-center gap-1.5 shadow-sm cursor-pointer"
+            title="Download executive performance report as PDF"
+          >
+            <span>{t('exportPdfBtn')}</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={handleExportCSVReport}
+            className="px-3 py-1.5 text-xs font-semibold text-emerald-300 bg-emerald-950/70 hover:bg-emerald-900/80 border border-emerald-800/80 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer"
+            title="Export structured performance report for Excel/BI analysis"
+          >
+            <span>{t('exportCsvBtn')}</span>
+          </button>
+
           <button
             type="button"
             onClick={() => window.print()}
-            className="px-3 py-1.5 text-xs font-semibold text-slate-900 bg-white hover:bg-slate-200 rounded-lg transition-colors flex items-center gap-1.5 shadow-sm"
+            className="px-3 py-1.5 text-xs font-medium text-slate-300 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer"
+            title="Print-ready briefing format"
           >
-            <span>🖨️ Print / Save PDF</span>
+            <span>{t('printBtn')}</span>
           </button>
         </div>
       </div>
+
+      {/* Export Feedback Toast */}
+      {exportFeedback && (
+        <div className="p-3 bg-emerald-950/60 border border-emerald-800/80 text-emerald-300 text-xs font-medium rounded-xl flex items-center justify-between animate-in fade-in duration-200">
+          <div className="flex items-center gap-2">
+            <span>✨</span>
+            <span>{exportFeedback}</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setExportFeedback(null)}
+            className="text-emerald-400 hover:text-white text-xs ml-3"
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
 
       {/* Period Filter & Automated Dispatch Controls */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
@@ -193,10 +234,10 @@ export const AutomatedReports: React.FC = () => {
               </button>
               <button
                 type="button"
-                onClick={handleExportCSV}
+                onClick={handleExportRawScans}
                 className="text-xs text-slate-300 hover:text-white font-medium"
               >
-                📥 Export CSV Logs
+                📥 Export Raw Scans (CSV)
               </button>
             </div>
           </div>
@@ -313,7 +354,7 @@ export const AutomatedReports: React.FC = () => {
         {/* Section 1: Executive Highlights */}
         <div className="space-y-3">
           <h3 className="text-xs font-bold uppercase tracking-wider text-slate-300 print:text-slate-900">
-            1. Automated Key Highlights & Performance Indicators
+            {t('highlightsTitle')}
           </h3>
           <div className="space-y-2">
             {currentReport.executiveHighlights.map((highlight, idx) => (
@@ -331,7 +372,7 @@ export const AutomatedReports: React.FC = () => {
         {/* Section 2: Strategic Marketing Recommendations */}
         <div className="space-y-3">
           <h3 className="text-xs font-bold uppercase tracking-wider text-slate-300 print:text-slate-900">
-            2. Strategic Retail Action Recommendations
+            {t('recommendationsTitle')}
           </h3>
           <div className="space-y-2">
             {currentReport.strategicRecommendations.map((rec, idx) => (
@@ -346,8 +387,37 @@ export const AutomatedReports: React.FC = () => {
           </div>
         </div>
 
+        {/* External Analysis Quick Action Strip */}
+        <div className="pt-4 border-t border-slate-800 print:hidden flex flex-wrap items-center justify-between gap-3 bg-slate-950/60 p-4 rounded-xl border border-slate-800/80">
+          <div>
+            <span className="text-xs font-bold text-white block">
+              {t('externalAnalysisBannerTitle')}
+            </span>
+            <span className="text-[11px] text-slate-400">
+              {t('externalAnalysisBannerSub')}
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={handleExportPDF}
+              className="px-3.5 py-2 text-xs font-bold text-slate-950 bg-white hover:bg-slate-200 rounded-lg transition-colors flex items-center gap-1.5 shadow-sm cursor-pointer"
+            >
+              <span>{t('downloadPdfBrief')}</span>
+            </button>
+            <button
+              type="button"
+              onClick={handleExportCSVReport}
+              className="px-3.5 py-2 text-xs font-bold text-emerald-300 bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-700/80 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer"
+            >
+              <span>{t('downloadCsvReport')}</span>
+            </button>
+          </div>
+        </div>
+
         {/* Document Footer Signoff */}
-        <div className="pt-6 border-t border-slate-800 print:border-black/20 flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-400 print:text-slate-500 font-mono">
+        <div className="pt-4 border-t border-slate-800 print:border-black/20 flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-400 print:text-slate-500 font-mono">
           <span>DRUK INTELLIGENCE SYSTEM · VERIFIED CRYPTOGRAPHIC RECORD</span>
           <span>STATUS: AUDITED & CERTIFIED</span>
         </div>

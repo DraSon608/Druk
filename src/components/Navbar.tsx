@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useData } from '../context/DataContext';
+import { useLanguage } from '../context/LanguageContext';
 import { UserRole } from '../types';
 
 export type NavTab =
@@ -19,21 +20,22 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
   const { currentUser, logout, switchRole, setIsLoginModalOpen } = useAuth();
   const { setIsCustomerScreenOpen, isCustomerScreenOpen } = useData();
+  const { language, setLanguage, t } = useLanguage();
 
   const navLinks: { id: NavTab; label: string }[] = [
-    { id: 'dashboard', label: 'Admin Dashboard' },
-    { id: 'pos', label: 'POS Terminal' },
-    { id: 'products', label: 'Product Engagement' },
-    { id: 'campaigns', label: 'Campaigns' },
-    { id: 'reports', label: 'Automated Reports' },
-    { id: 'security', label: 'Security & Access' },
+    { id: 'dashboard', label: t('navDashboard') },
+    { id: 'pos', label: t('navPos') },
+    { id: 'products', label: t('navProducts') },
+    { id: 'campaigns', label: t('navCampaigns') },
+    { id: 'reports', label: t('navReports') },
+    { id: 'security', label: t('navSecurity') },
   ];
 
   const roleLabels: Record<UserRole, string> = {
-    admin: 'Admin',
-    marketing_manager: 'Marketing',
-    pos_operator: 'POS Cashier',
-    analyst: 'Analyst',
+    admin: language === 'dz' ? 'བདག་སྐྱོང་' : 'Admin',
+    marketing_manager: language === 'dz' ? 'ཚོང་འབྲེལ་' : 'Marketing',
+    pos_operator: language === 'dz' ? 'རྩིས་པ' : 'POS Cashier',
+    analyst: language === 'dz' ? 'དབྱེ་ཞིབ་པ' : 'Analyst',
   };
 
   return (
@@ -52,10 +54,10 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
             </div>
             <div className="flex flex-col">
               <span className="text-lg font-extrabold tracking-wider text-white uppercase font-sans">
-                DRUK
+                {t('brandName')}
               </span>
               <span className="text-[10px] tracking-widest text-slate-400 font-medium -mt-1 uppercase">
-                POS MARKETING INTELLIGENCE
+                {t('brandTagline')}
               </span>
             </div>
           </div>
@@ -81,8 +83,36 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
             })}
           </nav>
 
-          {/* Zone 3: Actions & Auth Profile */}
+          {/* Zone 3: Actions, Dzongkha Toggle & Auth Profile */}
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            {/* Official Dzongkha Toggle Switch */}
+            <div className="flex items-center bg-slate-900 border border-slate-800 rounded-lg p-0.5">
+              <button
+                type="button"
+                onClick={() => setLanguage('en')}
+                className={`px-2 py-1 text-[11px] rounded transition-colors whitespace-nowrap font-medium ${
+                  language === 'en'
+                    ? 'bg-slate-800 text-white font-semibold'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+                title="Switch to English"
+              >
+                EN
+              </button>
+              <button
+                type="button"
+                onClick={() => setLanguage('dz')}
+                className={`px-2.5 py-1 text-[11px] rounded transition-colors whitespace-nowrap font-medium ${
+                  language === 'dz'
+                    ? 'bg-amber-950/80 text-amber-300 font-semibold border border-amber-800/80 shadow-xs'
+                    : 'text-slate-400 hover:text-amber-300'
+                }`}
+                title="Official Dzongkha (རྫོང་ཁ) Language Mode"
+              >
+                🇧🇹 རྫོང་ཁ
+              </button>
+            </div>
+
             {/* Customer Screen toggle */}
             <button
               type="button"
@@ -91,12 +121,12 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
               title="Launch interactive customer-facing marketing screen"
             >
               <span className="text-white">🐉</span>
-              <span className="hidden sm:inline">Customer Screen</span>
+              <span className="hidden sm:inline">{t('customerScreenBtn')}</span>
             </button>
 
-            {/* Quick role switch dropdown for easy demonstration */}
+            {/* Quick role switch dropdown */}
             {currentUser && (
-              <div className="hidden lg:flex items-center bg-slate-900 border border-slate-800 rounded-lg p-0.5">
+              <div className="hidden xl:flex items-center bg-slate-900 border border-slate-800 rounded-lg p-0.5">
                 {(['admin', 'marketing_manager', 'pos_operator'] as UserRole[]).map((r) => (
                   <button
                     key={r}
@@ -131,7 +161,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
                   className="px-2.5 py-1.5 text-xs font-medium text-slate-400 hover:text-rose-300 hover:bg-slate-900 rounded-lg transition-colors"
                   title="Sign out of Druk session"
                 >
-                  Logout
+                  {t('logout')}
                 </button>
               </div>
             ) : (
@@ -140,7 +170,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
                 onClick={() => setIsLoginModalOpen(true)}
                 className="px-3 py-1.5 text-xs font-semibold text-slate-950 bg-white hover:bg-slate-200 rounded-lg transition-colors whitespace-nowrap"
               >
-                Sign In
+                {t('signIn')}
               </button>
             )}
           </div>

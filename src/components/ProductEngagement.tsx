@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useData } from '../context/DataContext';
+import { useLanguage } from '../context/LanguageContext';
 import { Product, BarcodeFormat } from '../types';
 import { BarcodeSVG, ShelfTalkerCard } from './BarcodeRenderer';
 
 export const ProductEngagement: React.FC = () => {
+  const { t } = useLanguage();
   const { products, addProduct, updateProduct, deleteProduct, campaigns } = useData();
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -137,19 +139,19 @@ export const ProductEngagement: React.FC = () => {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-slate-900 border border-slate-800 p-5 rounded-xl">
         <div>
           <h1 className="text-lg font-bold text-white tracking-tight">
-            Product Engagement & Barcode Hub
+            {t('productHubTitle')}
           </h1>
           <p className="text-xs text-slate-400 mt-0.5">
-            Manage product metadata, generate retail barcodes, and monitor customer engagement velocity
+            {t('productHubSubtitle')}
           </p>
         </div>
 
         <button
           type="button"
           onClick={handleOpenAddModal}
-          className="px-4 py-2 text-xs font-bold text-slate-950 bg-white hover:bg-slate-200 rounded-lg transition-colors flex items-center gap-1.5 shadow-sm"
+          className="px-4 py-2 text-xs font-bold text-slate-950 bg-white hover:bg-slate-200 rounded-lg transition-colors flex items-center gap-1.5 shadow-sm cursor-pointer"
         >
-          <span>+ Add New Product</span>
+          <span>{t('addNewProductBtn')}</span>
         </button>
       </div>
 
@@ -160,16 +162,16 @@ export const ProductEngagement: React.FC = () => {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search products by name, SKU, or barcode..."
+            placeholder={t('searchProductsPlaceholder')}
             className="w-full sm:w-80 px-3 py-2 text-xs bg-slate-950 border border-slate-800 rounded-lg text-white font-mono focus:outline-none focus:border-slate-500"
           />
 
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="px-3 py-2 text-xs bg-slate-950 border border-slate-800 rounded-lg text-white focus:outline-none focus:border-slate-500"
+            className="px-3 py-2 text-xs bg-slate-950 border border-slate-800 rounded-lg text-white focus:outline-none focus:border-slate-500 cursor-pointer"
           >
-            <option value="ALL">All Categories</option>
+            <option value="ALL">{t('allCategories')}</option>
             {categories.map((c) => (
               <option key={c} value={c}>
                 {c}
@@ -179,7 +181,7 @@ export const ProductEngagement: React.FC = () => {
         </div>
 
         <span className="text-xs font-mono text-slate-400 self-center">
-          {filteredProducts.length} items cataloged
+          {filteredProducts.length} {t('itemsCataloged')}
         </span>
       </div>
 

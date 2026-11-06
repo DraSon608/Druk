@@ -1,9 +1,11 @@
 import React, { useState, useRef } from 'react';
 import { useData } from '../context/DataContext';
+import { useLanguage } from '../context/LanguageContext';
 import { BarcodeSVG } from './BarcodeRenderer';
 import { ShopperLoyaltyTier } from '../types';
 
 export const PosTerminal: React.FC = () => {
+  const { t } = useLanguage();
   const {
     products,
     scanBarcode,
@@ -117,12 +119,12 @@ export const PosTerminal: React.FC = () => {
           </div>
           <div>
             <h1 className="text-base font-bold text-white tracking-tight">
-              POS Barcode Engagement Terminal
+              {t('posTitle')}
             </h1>
             <div className="flex items-center gap-2 text-xs text-slate-400">
-              <span>Terminal ID: POS-01</span>
+              <span>{t('terminalId')}</span>
               <span>·</span>
-              <span>Real-Time Marketing Sync: Active</span>
+              <span>{t('syncActive')}</span>
             </div>
           </div>
         </div>
@@ -130,12 +132,12 @@ export const PosTerminal: React.FC = () => {
         <div className="flex flex-wrap items-center gap-3">
           <div>
             <label className="text-[11px] font-medium text-slate-400 block mb-1">
-              Store Location
+              {t('storeLocationLabel')}
             </label>
             <select
               value={selectedStore}
               onChange={(e) => setSelectedStore(e.target.value)}
-              className="px-2.5 py-1.5 text-xs bg-slate-950 border border-slate-800 rounded-lg text-white focus:outline-none focus:border-slate-500"
+              className="px-2.5 py-1.5 text-xs bg-slate-950 border border-slate-800 rounded-lg text-white focus:outline-none focus:border-slate-500 cursor-pointer"
             >
               {stores.map((s) => (
                 <option key={s} value={s}>
@@ -147,12 +149,12 @@ export const PosTerminal: React.FC = () => {
 
           <div>
             <label className="text-[11px] font-medium text-slate-400 block mb-1">
-              Shopper Loyalty Tier
+              {t('loyaltyTierLabel')}
             </label>
             <select
               value={activeCustomerTier}
               onChange={(e) => setActiveCustomerTier(e.target.value as ShopperLoyaltyTier)}
-              className="px-2.5 py-1.5 text-xs bg-slate-950 border border-slate-800 rounded-lg text-white focus:outline-none focus:border-slate-500 font-medium"
+              className="px-2.5 py-1.5 text-xs bg-slate-950 border border-slate-800 rounded-lg text-white focus:outline-none focus:border-slate-500 font-medium cursor-pointer"
             >
               {tiers.map((t) => (
                 <option key={t} value={t}>
@@ -166,9 +168,9 @@ export const PosTerminal: React.FC = () => {
             <button
               type="button"
               onClick={() => setIsCustomerScreenOpen(true)}
-              className="px-3 py-1.5 text-xs font-semibold text-slate-900 bg-white hover:bg-slate-200 rounded-lg transition-colors flex items-center gap-1.5"
+              className="px-3 py-1.5 text-xs font-semibold text-slate-900 bg-white hover:bg-slate-200 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer"
             >
-              <span>Customer Display</span>
+              <span>{t('customerDisplayBtn')}</span>
             </button>
           </div>
         </div>
@@ -183,10 +185,10 @@ export const PosTerminal: React.FC = () => {
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 <span className="text-xs font-bold tracking-wider uppercase text-slate-300">
-                  Barcode Laser Scanner
+                  {t('scannerTitle')}
                 </span>
                 <span className="text-[11px] text-slate-400 font-mono">
-                  [EAN-13 / UPC / Code-128 / QR]
+                  {t('scannerFormats')}
                 </span>
               </div>
               <div className="flex items-center gap-2">
@@ -194,18 +196,18 @@ export const PosTerminal: React.FC = () => {
                   <button
                     type="button"
                     onClick={stopCamera}
-                    className="px-2.5 py-1 text-xs text-rose-300 bg-rose-950/60 border border-rose-800 rounded-md hover:bg-rose-900/60 transition-colors"
+                    className="px-2.5 py-1 text-xs text-rose-300 bg-rose-950/60 border border-rose-800 rounded-md hover:bg-rose-900/60 transition-colors cursor-pointer"
                   >
-                    Turn Camera Off
+                    {t('turnCameraOff')}
                   </button>
                 ) : (
                   <button
                     type="button"
                     onClick={startCamera}
-                    className="px-2.5 py-1 text-xs text-slate-300 bg-slate-800 border border-slate-700 rounded-md hover:bg-slate-700 transition-colors flex items-center gap-1"
+                    className="px-2.5 py-1 text-xs text-slate-300 bg-slate-800 border border-slate-700 rounded-md hover:bg-slate-700 transition-colors flex items-center gap-1 cursor-pointer"
                   >
                     <span>📷</span>
-                    <span>Use Camera</span>
+                    <span>{t('useCamera')}</span>
                   </button>
                 )}
               </div>
@@ -227,10 +229,10 @@ export const PosTerminal: React.FC = () => {
                     ⚡
                   </div>
                   <span className="text-xs font-semibold text-slate-200">
-                    Scanner Ready
+                    {t('scannerReady')}
                   </span>
                   <span className="text-[11px] text-slate-400 mt-0.5">
-                    Click any quick test barcode below or type barcode number
+                    {t('scannerReadySub')}
                   </span>
                 </div>
               )}
@@ -252,14 +254,14 @@ export const PosTerminal: React.FC = () => {
                 type="text"
                 value={barcodeInput}
                 onChange={(e) => setBarcodeInput(e.target.value)}
-                placeholder="Scan or enter barcode / SKU (e.g. 8901030829141)..."
+                placeholder={t('scanInputPlaceholder')}
                 className="flex-1 px-3 py-2 text-xs bg-slate-950 border border-slate-800 rounded-lg text-white font-mono focus:outline-none focus:border-slate-500"
               />
               <button
                 type="submit"
-                className="px-4 py-2 text-xs font-bold text-slate-950 bg-white hover:bg-slate-200 rounded-lg transition-colors whitespace-nowrap"
+                className="px-4 py-2 text-xs font-bold text-slate-950 bg-white hover:bg-slate-200 rounded-lg transition-colors whitespace-nowrap cursor-pointer"
               >
-                Scan Item
+                {t('scanItemBtn')}
               </button>
             </form>
 
@@ -289,14 +291,14 @@ export const PosTerminal: React.FC = () => {
             <div className="flex items-center justify-between mb-3">
               <div>
                 <h3 className="text-xs font-bold tracking-wider uppercase text-slate-300">
-                  Quick Barcode Test Studio
+                  {t('quickStudioTitle')}
                 </h3>
                 <span className="text-[11px] text-slate-400">
-                  Click any product below to simulate a high-speed laser scan
+                  {t('quickStudioSub')}
                 </span>
               </div>
               <span className="text-[11px] text-slate-400 font-mono">
-                {products.length} Products Available
+                {products.length} {t('productsAvailable')}
               </span>
             </div>
 
@@ -306,7 +308,7 @@ export const PosTerminal: React.FC = () => {
                   key={prod.id}
                   type="button"
                   onClick={() => handleQuickScan(prod.barcode)}
-                  className="p-3 text-left bg-slate-950/70 hover:bg-slate-950 border border-slate-800 hover:border-slate-600 rounded-lg transition-all group flex flex-col justify-between"
+                  className="p-3 text-left bg-slate-950/70 hover:bg-slate-950 border border-slate-800 hover:border-slate-600 rounded-lg transition-all group flex flex-col justify-between cursor-pointer"
                 >
                   <div className="flex items-start justify-between gap-2 w-full">
                     <span className="text-xs font-semibold text-white group-hover:text-emerald-400 transition-colors">
@@ -326,7 +328,7 @@ export const PosTerminal: React.FC = () => {
 
                   {prod.activeCampaignId && (
                     <div className="mt-1.5 text-[10px] text-amber-300 font-medium">
-                      ⚡ Active Marketing Campaign Linked
+                      ⚡ {t('activePromoLinked')}
                     </div>
                   )}
                 </button>
@@ -339,7 +341,7 @@ export const PosTerminal: React.FC = () => {
             <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
               <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-3">
                 <span className="text-xs font-bold uppercase tracking-wider text-slate-300">
-                  Live Scanned Product Spotlight
+                  {t('scannedSpotlight')}
                 </span>
                 <span className="text-xs text-slate-400 font-mono">
                   {lastScannedProduct.sku}
@@ -386,7 +388,7 @@ export const PosTerminal: React.FC = () => {
                     <span className="text-amber-400 text-base">✨</span>
                     <div>
                       <span className="text-xs font-bold text-amber-200 block">
-                        Campaign Promo Unlocked: {lastTriggeredCampaign.name}
+                        Campaign Promo: {lastTriggeredCampaign.name}
                       </span>
                       <span className="text-[11px] text-amber-300/80">
                         {lastTriggeredCampaign.tagline} ({lastTriggeredCampaign.code})
@@ -409,19 +411,19 @@ export const PosTerminal: React.FC = () => {
               <div className="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-bold text-white">
-                    Active POS Transaction
+                    {t('activeCartTitle')}
                   </span>
                   <span className="text-xs font-mono text-slate-400">
-                    ({posCart.reduce((s, i) => s + i.quantity, 0)} items)
+                    ({posCart.reduce((s, i) => s + i.quantity, 0)} {t('itemsCount')})
                   </span>
                 </div>
                 {posCart.length > 0 && (
                   <button
                     type="button"
                     onClick={clearCart}
-                    className="text-xs text-slate-400 hover:text-rose-400 transition-colors"
+                    className="text-xs text-slate-400 hover:text-rose-400 transition-colors cursor-pointer"
                   >
-                    Clear Basket
+                    {t('clearBasket')}
                   </button>
                 )}
               </div>
@@ -433,10 +435,10 @@ export const PosTerminal: React.FC = () => {
                     🛒
                   </div>
                   <p className="text-xs font-medium text-slate-300">
-                    Cart is empty
+                    {t('cartEmptyTitle')}
                   </p>
                   <p className="text-[11px] text-slate-400 mt-1 max-w-xs mx-auto">
-                    Scan products via barcode laser or click any quick-test item to build transaction.
+                    {t('cartEmptySub')}
                   </p>
                 </div>
               ) : (
@@ -474,7 +476,7 @@ export const PosTerminal: React.FC = () => {
                             <button
                               type="button"
                               onClick={() => updateCartQty(item.product.id, item.quantity - 1)}
-                              className="w-6 h-6 rounded bg-slate-800 hover:bg-slate-700 text-xs text-white flex items-center justify-center"
+                              className="w-6 h-6 rounded bg-slate-800 hover:bg-slate-700 text-xs text-white flex items-center justify-center cursor-pointer"
                             >
                               -
                             </button>
@@ -484,7 +486,7 @@ export const PosTerminal: React.FC = () => {
                             <button
                               type="button"
                               onClick={() => updateCartQty(item.product.id, item.quantity + 1)}
-                              className="w-6 h-6 rounded bg-slate-800 hover:bg-slate-700 text-xs text-white flex items-center justify-center"
+                              className="w-6 h-6 rounded bg-slate-800 hover:bg-slate-700 text-xs text-white flex items-center justify-center cursor-pointer"
                             >
                               +
                             </button>
@@ -493,7 +495,7 @@ export const PosTerminal: React.FC = () => {
                           <button
                             type="button"
                             onClick={() => removeFromCart(item.product.id)}
-                            className="text-[11px] text-slate-400 hover:text-rose-400 transition-colors"
+                            className="text-[11px] text-slate-400 hover:text-rose-400 transition-colors cursor-pointer"
                           >
                             Remove
                           </button>
@@ -508,7 +510,7 @@ export const PosTerminal: React.FC = () => {
             {/* Financial Summary & Checkout Button */}
             <div className="pt-4 border-t border-slate-800 mt-4 space-y-2">
               <div className="flex items-center justify-between text-xs text-slate-400">
-                <span>Subtotal</span>
+                <span>{t('subtotal')}</span>
                 <span className="font-mono tabular-nums text-slate-300">
                   ${cartSubtotal.toFixed(2)}
                 </span>
@@ -516,7 +518,7 @@ export const PosTerminal: React.FC = () => {
 
               {cartSavings > 0 && (
                 <div className="flex items-center justify-between text-xs text-emerald-400 font-medium">
-                  <span>Marketing Barcode Savings</span>
+                  <span>{t('barcodeSavings')}</span>
                   <span className="font-mono tabular-nums">
                     -${cartSavings.toFixed(2)}
                   </span>
@@ -524,7 +526,7 @@ export const PosTerminal: React.FC = () => {
               )}
 
               <div className="flex items-baseline justify-between text-base font-bold text-white pt-2 border-t border-slate-800">
-                <span>Total Due</span>
+                <span>{t('totalDue')}</span>
                 <span className="font-mono tabular-nums text-xl">
                   ${cartTotal.toFixed(2)}
                 </span>
@@ -534,9 +536,9 @@ export const PosTerminal: React.FC = () => {
                 type="button"
                 disabled={posCart.length === 0}
                 onClick={handleCheckout}
-                className="w-full mt-3 py-3 px-4 text-xs font-bold text-slate-950 bg-white hover:bg-slate-200 disabled:opacity-40 disabled:cursor-not-allowed rounded-lg transition-colors flex items-center justify-center gap-2"
+                className="w-full mt-3 py-3 px-4 text-xs font-bold text-slate-950 bg-white hover:bg-slate-200 disabled:opacity-40 disabled:cursor-not-allowed rounded-lg transition-colors flex items-center justify-center gap-2 cursor-pointer"
               >
-                <span>Complete Checkout & Log Engagement</span>
+                <span>{t('completeCheckoutBtn')}</span>
               </button>
 
               {lastCheckoutResult && (

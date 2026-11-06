@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useData } from '../context/DataContext';
+import { useLanguage } from '../context/LanguageContext';
 import { Campaign, DiscountType, TriggerCondition } from '../types';
 import { computeBasketAffinity } from '../utils/analytics';
 
 export const MarketingCampaigns: React.FC = () => {
+  const { t } = useLanguage();
   const { campaigns, addCampaign, updateCampaign, toggleCampaignStatus, products, scanEvents } = useData();
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -78,19 +80,19 @@ export const MarketingCampaigns: React.FC = () => {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-slate-900 border border-slate-800 p-5 rounded-xl">
         <div>
           <h1 className="text-lg font-bold text-white tracking-tight">
-            POS Barcode Marketing Campaigns
+            {t('campaignsTitle')}
           </h1>
           <p className="text-xs text-slate-400 mt-0.5">
-            Configure promotional triggers attached to physical barcodes, manage shopper loyalty perks, and review campaign ROI
+            {t('campaignsSubtitle')}
           </p>
         </div>
 
         <button
           type="button"
           onClick={handleOpenAdd}
-          className="px-4 py-2 text-xs font-bold text-slate-950 bg-white hover:bg-slate-200 rounded-lg transition-colors flex items-center gap-1.5 shadow-sm"
+          className="px-4 py-2 text-xs font-bold text-slate-950 bg-white hover:bg-slate-200 rounded-lg transition-colors flex items-center gap-1.5 shadow-sm cursor-pointer"
         >
-          <span>+ Create Barcode Campaign</span>
+          <span>{t('createCampaignBtn')}</span>
         </button>
       </div>
 
@@ -123,7 +125,7 @@ export const MarketingCampaigns: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => toggleCampaignStatus(camp.id)}
-                    className={`px-2.5 py-1 text-[11px] font-semibold rounded-md transition-colors ${
+                    className={`px-2.5 py-1 text-[11px] font-semibold rounded-md transition-colors cursor-pointer ${
                       camp.status === 'active'
                         ? 'bg-emerald-950/60 text-emerald-300 border border-emerald-800/60'
                         : 'bg-slate-800 text-slate-400'
@@ -140,7 +142,7 @@ export const MarketingCampaigns: React.FC = () => {
                 {/* Target Products Tags */}
                 <div className="mb-4">
                   <span className="text-[10px] font-medium uppercase tracking-wider text-slate-400 block mb-1.5">
-                    Targeted Products ({targetProducts.length})
+                    {t('targetedProducts')} ({targetProducts.length})
                   </span>
                   <div className="flex flex-wrap gap-1.5">
                     {targetProducts.map((p) => (
@@ -209,10 +211,10 @@ export const MarketingCampaigns: React.FC = () => {
         <div className="flex items-center justify-between pb-3 border-b border-slate-800 mb-3">
           <div>
             <h2 className="text-xs font-bold uppercase tracking-wider text-slate-300">
-              POS Basket Affinity & Co-Scan Intelligence
+              {t('basketAffinityTitle')}
             </h2>
             <span className="text-[11px] text-slate-400">
-              Algorithmically discovered product pairings scanned together at POS
+              {t('basketAffinitySubtitle')}
             </span>
           </div>
           <span className="text-[11px] font-mono text-slate-400">
@@ -249,9 +251,9 @@ export const MarketingCampaigns: React.FC = () => {
                 <button
                   type="button"
                   onClick={handleOpenAdd}
-                  className="px-3 py-1.5 text-xs text-slate-300 bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap"
+                  className="px-3 py-1.5 text-xs text-slate-300 bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors whitespace-nowrap cursor-pointer"
                 >
-                  Create Pair Promo
+                  {t('createPairPromo')}
                 </button>
               </div>
             ))
