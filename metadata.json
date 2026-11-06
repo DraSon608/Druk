@@ -1,0 +1,6 @@
+{
+  "name": "Druk - POS Barcode Marketing Intelligence",
+  "description": "Next-generation POS barcode marketing engagement platform with real-time customer analytics, automated reporting, and white dragon visual branding.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
